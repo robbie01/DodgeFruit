@@ -136,7 +136,6 @@ void LCDClass::DrawPixel(int x, int y) {
         .x = (x % SCREEN_SIZE_X),
         .y = (y % SCREEN_SIZE_Y),
         .w = 1, .h = 1 };
-    //SDL_FillRect(SDL_GetWindowSurface(win.get()), &target, color);
     void *pixels;
     int pitch;
     SDL_LockTexture(tex.get(), &target, &pixels, &pitch);
@@ -145,17 +144,21 @@ void LCDClass::DrawPixel(int x, int y) {
 }
 
 void LCDClass::Update() {
-    //SDL_UpdateWindowSurface(win.get());
     SDL_RenderClear(ren.get());
     SDL_RenderCopy(ren.get(), tex.get(), NULL, NULL);
     SDL_RenderPresent(ren.get());
 }
 
 void LCDClass::Clear() {
-    //SDL_FillRect(SDL_GetWindowSurface(win.get()), NULL, bgcolor);
-    SDL_Surface *sur;
-    SDL_LockTextureToSurface(tex.get(), NULL, &sur);
-    SDL_FillRect(sur, NULL, bgcolor | 0xFF000000);
+    void *pixels;
+    int pitch;
+    SDL_LockTexture(tex.get(), NULL, &pixels, &pitch);
+    for (int y = 0; y < SCREEN_SIZE_Y; ++y) {
+        int *row = (int*)((char*)pixels+y*pitch);
+        for (int x = 0; x < SCREEN_SIZE_X; ++x) {
+            row[x] = bgcolor | 0xFF000000;
+        }
+    }
     SDL_UnlockTexture(tex.get());
 }
 
@@ -187,11 +190,14 @@ void LCDClass::WriteAt(char c, int x, int y) {
                 tgt.x = x + col*2;
                 tgt.y = y + row*2;
                 // Draw a 2x2 rectangle to represent each pixel since sizes are doubled
-                //SDL_FillRect(SDL_GetWindowSurface(win.get()), &tgt, color);
                 
-                SDL_Surface *sur;
-                SDL_LockTextureToSurface(tex.get(), &tgt, &sur);
-                SDL_FillRect(sur, NULL, color | 0xFF000000);
+                void *pixels;
+                int pitch;
+                SDL_LockTexture(tex.get(), &tgt, &pixels, &pitch);
+                ((int*)pixels)[0] = color | 0xFF000000;
+                ((int*)pixels)[1] = color | 0xFF000000;
+                ((int*)((char*)pixels+pitch))[0] = color | 0xFF000000;
+                ((int*)((char*)pixels+pitch))[1] = color | 0xFF000000;
                 SDL_UnlockTexture(tex.get());
             }
         }
