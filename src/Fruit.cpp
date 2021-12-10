@@ -21,10 +21,10 @@ static Vector2 fruitpos(float t, Vector2 offset, Fruit::FruitType type) {
         // star
         return Vector2(SCREEN_SIZE_Y/2 * powf(cosf(t),5) + offset.x(), SCREEN_SIZE_Y/2 * powf(sinf(t),5) + offset.y());
     case Fruit::TANGERINE:
-        // diamond
+        // sin wave
         return Vector2(SCREEN_SIZE_Y/2 * t + offset.x(), SCREEN_SIZE_Y/2 * sinf(t) + offset.y());
     case Fruit::STRAWBERRY:
-        // sin wave (broken)
+        // unimplemented?
         return Vector2();
     case Fruit::WATERMELON:
         // infinity
