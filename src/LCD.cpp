@@ -142,18 +142,15 @@ void LCDClass::Clear() {
     SDL_FillRect(sur.get(), NULL, bgcolor);
 }
 
-void LCDClass::WriteAt(char c, int x, int y) {
+void LCDClass::WriteAt(char cc, int x, int y) {
+    int c = cc;
     if (c > 125 || c < 32) {
         c = 32;
     }
     c -= 32;
 
     unsigned char charData[5];
-    charData[0] = fontData[5 * c];
-    charData[1] = fontData[5 * c + 1];
-    charData[2] = fontData[5 * c + 2];
-    charData[3] = fontData[5 * c + 3];
-    charData[4] = fontData[5 * c + 4];
+    std::copy_n(fontData + 5*c, 5, charData);
 
     x += 2;
 
