@@ -2,9 +2,10 @@
 
 This isn't really a README as much as it is the current state of the project.
 
+- Linux works, as it should. Use `mkdir build; cd build; cmake -G Ninja ..; ninja`
+  - You don't *have* to use Ninja, I just think it's cool.
 - Emscripten works. This required vast restructuring to achieve, but it paid off, mostly.
   - Use `mkdir buildem; cd buildem; emcmake cmake -G Ninja ..; ninja`
-    - You don't *have* to use Ninja, I just think it's cool.
 - OpenBSD works. Compile as normal.
 - Cross-compiling to Windows works. Use `mkdir buildwin; cd buildwin; cmake -G Ninja -DCMAKE_TOOLCHAIN_FILE=/usr/share/mingw/toolchain-mingw64.cmake ..; ninja`
   - I currently have no way of testing whether this compiles with MinGW under Windows, or if the output even runs outside of WINE at all.
