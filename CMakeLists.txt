@@ -18,6 +18,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${USE_FLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${USE_FLAGS} --preload-file sprites/")
     set(CMAKE_EXECUTABLE_SUFFIX .html)
+
+    set_target_properties(DodgeFruit PROPERTIES OUTPUT_NAME "index")
 else()
     find_package(SDL2 REQUIRED)
     if(MINGW)

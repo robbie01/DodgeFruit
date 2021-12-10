@@ -8,7 +8,7 @@ This isn't really a README as much as it is the current state of the project.
   - I currently have no way of testing whether this compiles with MinGW under Windows, or if the output even runs outside of WINE at all.
 - OpenBSD works. Compile as normal.
 - Emscripten works. This required vast restructuring to achieve, but it paid off, mostly.
-  - Use `mkdir buildem; cd buildem; emcmake cmake -G Ninja ..; ninja`
+  - Use `mkdir buildem; cd buildem; emcmake cmake -G Ninja ..; ninja`, and run a web server there (e.g. `serve` or python's `http.server`)
 - ~~A streaming texture is now used instead of GetWindowSurface to maximize compatibility with Emscripten.~~
   - ~~When using GetWindowSurface, the colors weren't consistent between native and Emscripten. This makes sense, as SDL surfaces weren't made for portability.~~
   - ~~For some reason, changing screens is now a slow operation, even though the gameplay itself is still decent outside of Emscripten.~~

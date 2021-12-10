@@ -20,7 +20,7 @@ class Fruit {
     private:
         Sprite sprite_;
         FruitType type_;
-        float t_ = 0;
+        float t_;
         float speed_;
         Vector2 offset_;
 };
