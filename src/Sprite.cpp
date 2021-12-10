@@ -25,7 +25,7 @@ void Sprite::swapImage(std::string spriteName, const Vector2 &spriteSize) {
     std::ifstream sprFile("sprites/" + spriteName + ".spr");
 
     int pixelCount = 0;
-    int next;
+    pixel_t next;
 
     while(sprFile >> next){
         int x = pixelCount / (int)spriteSize.x();
@@ -39,7 +39,7 @@ void Sprite::swapImage(std::string spriteName, const Vector2 &spriteSize) {
 void Sprite::draw() {
     for(int i = 0; i < size.x(); i++) {
         for(int j = 0; j < size.y(); j++) {
-            int color = image[j][i];
+            pixel_t color = image[j][i];
             bool transparent = (color == -1);
 
             // draw pixel on the screen

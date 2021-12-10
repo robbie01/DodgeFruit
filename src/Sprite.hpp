@@ -3,9 +3,10 @@
 #include <string>
 #include "Vector.hpp"
 #include "Constants.hpp"
+#include "LCD.hpp"
 
 class Sprite {
-	int image[SPRITE_SIZE_X + 1][SPRITE_SIZE_Y + 1];
+	pixel_t image[SPRITE_SIZE_X + 1][SPRITE_SIZE_Y + 1];
 
 	void drawScaledPixel(Vector2) const;
 public:

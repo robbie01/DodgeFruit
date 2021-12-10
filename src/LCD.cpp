@@ -121,16 +121,16 @@ LCDClass &LCDClass::getInstance() {
     return instance;
 }
 
-void LCDClass::SetFontColor(int color) {
+void LCDClass::SetFontColor(pixel_t color) {
     this->color = color;
 }
 
-void LCDClass::SetBackgroundColor(int bgcolor) {
+void LCDClass::SetBackgroundColor(pixel_t bgcolor) {
     this->bgcolor = bgcolor;
 }
 
 void LCDClass::DrawPixel(int x, int y) {
-    ((int*)((char*)sur->pixels+(y % SCREEN_SIZE_Y)*sur->pitch))[x % SCREEN_SIZE_X] = color;
+    ((pixel_t*)((char*)sur->pixels+(y % SCREEN_SIZE_Y)*sur->pitch))[x % SCREEN_SIZE_X] = color;
 }
 
 void LCDClass::Update() {
@@ -139,8 +139,6 @@ void LCDClass::Update() {
 }
 
 void LCDClass::Clear() {
-    void *pixels;
-    int pitch;
     SDL_FillRect(sur.get(), NULL, bgcolor);
 }
 

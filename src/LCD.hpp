@@ -8,6 +8,8 @@
 template <typename T>
 using SDLWrap = std::unique_ptr<T, std::function<void(T*)>>;
 
+using pixel_t = std::uint32_t;
+
 struct WindowSize {
     int w;
     int h;
@@ -17,7 +19,7 @@ class LCDClass {
     SDLWrap<SDL_Window> win;
     SDLWrap<SDL_Surface> sur;
 public:
-    int color, bgcolor;
+    pixel_t color, bgcolor;
 
     static LCDClass &getInstance();
 
@@ -26,8 +28,8 @@ public:
 
     LCDClass();
 
-    void SetFontColor(int);
-    void SetBackgroundColor(int);
+    void SetFontColor(pixel_t);
+    void SetBackgroundColor(pixel_t);
     void Clear();
     void DrawPixel(int, int);
     void Update();
@@ -46,7 +48,7 @@ public:
     WindowSize size();
 };
 
-constexpr int BLACK = 0;
-constexpr int CYAN = 0x00FFFF;
+constexpr pixel_t BLACK = 0;
+constexpr pixel_t CYAN = 0x00FFFF;
 
 #define LCD (LCDClass::getInstance())
