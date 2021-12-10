@@ -1,11 +1,13 @@
 #pragma once
 
 #include <sstream>
+#include "SDL.hpp"
 
 class LCDClass {
     LCDClass();
     ~LCDClass();
-    void *secret_data;
+    SDL_Window *win;
+    SDL_Surface *scr;
 public:
     int color, bgcolor;
 

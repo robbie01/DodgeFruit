@@ -103,25 +103,16 @@ static unsigned char fontData[] = {
     0x08, 0x1C, 0x2A, 0x08, 0x08  // <-
 };
 
-struct SecretData {
-    SDL_Window *win;
-    SDL_Surface *scr;
-};
-
 LCDClass::LCDClass() {
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window *win = SDL_CreateWindow("Dodge Fruit",
+    win = SDL_CreateWindow("Dodge Fruit",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         SCREEN_SIZE_X*PIXEL_SCALE, SCREEN_SIZE_Y*PIXEL_SCALE,
         0);
-    SDL_Surface *scr = SDL_GetWindowSurface(win);
-    secret_data = new SecretData { .win = win, .scr = scr };
+    scr = SDL_GetWindowSurface(win);
 }
 
 LCDClass::~LCDClass() {
-    SecretData &data = *(SecretData*)secret_data;
-    SDL_DestroyWindow(data.win);
-    SDL_Quit();
+    SDL_DestroyWindow(win);
 }
 
 LCDClass &LCDClass::getInstance() {
@@ -138,27 +129,22 @@ void LCDClass::SetBackgroundColor(int bgcolor) {
 }
 
 void LCDClass::DrawPixel(int x, int y) {
-    SecretData &data = *(SecretData*)secret_data;
     SDL_Rect target { 
         .x = (x % SCREEN_SIZE_X)*PIXEL_SCALE,
         .y = (y % SCREEN_SIZE_Y)*PIXEL_SCALE,
         .w = PIXEL_SCALE, .h = PIXEL_SCALE };
-    SDL_FillRect(data.scr, &target, color);
+    SDL_FillRect(scr, &target, color);
 }
 
 void LCDClass::Update() {
-    SecretData &data = *(SecretData*)secret_data;
-    SDL_UpdateWindowSurface(data.win);
+    SDL_UpdateWindowSurface(win);
 }
 
 void LCDClass::Clear() {
-    SecretData &data = *(SecretData*)secret_data;
-    SDL_FillRect(data.scr, NULL, bgcolor);
+    SDL_FillRect(scr, NULL, bgcolor);
 }
 
 void LCDClass::WriteAt(char c, int x, int y) {
-    SecretData &data = *(SecretData*)secret_data;
-
     if (c > 125 || c < 32) {
         c = 32;
     }
@@ -185,7 +171,7 @@ void LCDClass::WriteAt(char c, int x, int y) {
                 tgt.x = (x + col*2) * PIXEL_SCALE;
                 tgt.y = (y + row*2) * PIXEL_SCALE;
                 // Draw a 2x2 rectangle to represent each pixel since sizes are doubled
-                SDL_FillRect(data.scr, &tgt, color);
+                SDL_FillRect(scr, &tgt, color);
             }
         }
     }
