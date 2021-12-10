@@ -108,16 +108,12 @@ constexpr int INIT_PIXEL_SCALE = 3;
 
 LCDClass::LCDClass() {
     SDL_Window *pwin;
-    SDL_Renderer *pren;
-    SDL_Texture *ptex;
+    SDL_Surface *psur;
     pwin = SDL_CreateWindow("Dodge Fruit", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_SIZE_X*INIT_PIXEL_SCALE, SCREEN_SIZE_Y*INIT_PIXEL_SCALE, SDL_WINDOW_RESIZABLE);
-    pren = SDL_CreateRenderer(pwin, -1, SDL_RENDERER_ACCELERATED);
-    SDL_SetRenderDrawColor(pren, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
-    ptex = SDL_CreateTexture(pren, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_STREAMING, SCREEN_SIZE_X, SCREEN_SIZE_Y);
+    psur = SDL_CreateRGBSurface(0, SCREEN_SIZE_X, SCREEN_SIZE_Y, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0);
 
     win = SDLWrap<SDL_Window>(pwin, SDL_DestroyWindow);
-    ren = SDLWrap<SDL_Renderer>(pren, SDL_DestroyRenderer);
-    tex = SDLWrap<SDL_Texture>(ptex, SDL_DestroyTexture);
+    sur = SDLWrap<SDL_Surface>(psur, SDL_FreeSurface);
 }
 
 LCDClass &LCDClass::getInstance() {
@@ -134,32 +130,18 @@ void LCDClass::SetBackgroundColor(int bgcolor) {
 }
 
 void LCDClass::DrawPixel(int x, int y) {
-    SDL_Rect target { 
-        .x = (x % SCREEN_SIZE_X),
-        .y = (y % SCREEN_SIZE_Y),
-        .w = 1, .h = 1 };
-    void *pixels;
-    int pitch;
-    SDL_LockTexture(tex.get(), &target, &pixels, &pitch);
-    ((int*)(pixels))[0] = color | 0xFF000000;
-    SDL_UnlockTexture(tex.get());
+    ((int*)((char*)sur->pixels+(y % SCREEN_SIZE_Y)*sur->pitch))[x % SCREEN_SIZE_X] = color;
 }
 
 void LCDClass::Update() {
-    SDL_RenderClear(ren.get());
-    SDL_RenderCopy(ren.get(), tex.get(), NULL, NULL);
-    SDL_RenderPresent(ren.get());
+    SDL_BlitScaled(sur.get(), NULL, SDL_GetWindowSurface(win.get()), NULL);
+    SDL_UpdateWindowSurface(win.get());
 }
 
 void LCDClass::Clear() {
     void *pixels;
     int pitch;
-    SDL_LockTexture(tex.get(), NULL, &pixels, &pitch);
-    for (int y = 0; y < SCREEN_SIZE_Y; ++y) {
-        int *row = (int*)((char*)pixels+y*pitch);
-        std::fill_n(row, SCREEN_SIZE_X, bgcolor | 0xFF000000);  
-    }
-    SDL_UnlockTexture(tex.get());
+    SDL_FillRect(sur.get(), NULL, bgcolor);
 }
 
 void LCDClass::WriteAt(char c, int x, int y) {
@@ -191,14 +173,7 @@ void LCDClass::WriteAt(char c, int x, int y) {
                 tgt.y = y + row*2;
                 // Draw a 2x2 rectangle to represent each pixel since sizes are doubled
                 
-                void *pixels;
-                int pitch;
-                SDL_LockTexture(tex.get(), &tgt, &pixels, &pitch);
-                ((int*)pixels)[0] = color | 0xFF000000;
-                ((int*)pixels)[1] = color | 0xFF000000;
-                ((int*)((char*)pixels+pitch))[0] = color | 0xFF000000;
-                ((int*)((char*)pixels+pitch))[1] = color | 0xFF000000;
-                SDL_UnlockTexture(tex.get());
+                SDL_FillRect(sur.get(), &tgt, color);
             }
         }
     }
