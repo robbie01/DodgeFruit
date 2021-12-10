@@ -130,6 +130,8 @@ void LCDClass::SetBackgroundColor(pixel_t bgcolor) {
 }
 
 void LCDClass::DrawPixel(int x, int y) {
+    while (x < 0) x += SCREEN_SIZE_X;
+    while (y < 0) y += SCREEN_SIZE_Y;
     ((pixel_t*)((char*)sur->pixels+(y % SCREEN_SIZE_Y)*sur->pitch))[x % SCREEN_SIZE_X] = color;
 }
 
