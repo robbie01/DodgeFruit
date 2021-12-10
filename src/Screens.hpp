@@ -30,7 +30,7 @@ public:
 class GameplayScreen : public Screen {
     Sprite character;
     std::vector<Fruit> projectiles;
-    std::chrono::time_point<std::chrono::system_clock> lastTime, lastFruitSpawnTime;
+    std::chrono::time_point<std::chrono::system_clock> beginTime, lastTime, lastFruitSpawnTime;
     float playerTime;
     int xpos, ypos;
 public:

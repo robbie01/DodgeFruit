@@ -85,7 +85,8 @@ ScreenUpdateReturn MenuScreen::update() {
 
 GameplayScreen::GameplayScreen() :
     character("pointer", Vector2(8, 8)),
-    lastTime(std::chrono::system_clock::now()),
+    beginTime(std::chrono::system_clock::now()),
+    lastTime(beginTime),
     lastFruitSpawnTime(lastTime - std::chrono::seconds(4)),
     playerTime(0)
 {
@@ -128,6 +129,8 @@ ScreenUpdateReturn GameplayScreen::update() {
     auto now = std::chrono::system_clock::now();
     float dt = std::chrono::duration_cast<std::chrono::duration<float>>(now - lastTime).count();
 
+    playerTime = std::chrono::duration_cast<std::chrono::duration<float>>(now - beginTime).count();
+
     for(Fruit &f : projectiles) {
         f.stepPath(dt);
         if(f.sprite().isPointWithin(mousePos)) {
@@ -141,9 +144,6 @@ ScreenUpdateReturn GameplayScreen::update() {
         projectiles.emplace_back(makeRandomFruit());
         lastFruitSpawnTime = now;
     }
-
-    //increment timer
-    playerTime = playerTime + dt;
 
     //write current time to top right corner of screen
     LCD.WriteAt(playerTime, 240, 15);
