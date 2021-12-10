@@ -17,7 +17,7 @@
 Vector2::Vector2(float x, float y) {
     this->x_ = x;
     this->y_ = y;
-    this->mag_ = sqrt(x*x + y*y);
+    this->mag_ = std::sqrt(x*x + y*y);
 }
 
 Vector2::Vector2(float n) : Vector2(n, n) {}
@@ -61,7 +61,7 @@ Vector2 &Vector2::operator*=(const Vector2& that) {
 
 // overload a == b
 bool Vector2::operator==(const Vector2& that) const {
-    return abs(this->x_ - that.x_) < DELTA && abs(this->y_ - that.y_) < DELTA;
+    return std::abs(this->x_ - that.x_) < DELTA && std::abs(this->y_ - that.y_) < DELTA;
 }
 
 // overload a != b

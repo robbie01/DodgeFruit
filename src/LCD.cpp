@@ -1,5 +1,4 @@
 #include "SDL.hpp"
-#include <iostream>
 #include <string>
 #include <algorithm>
 #include "Constants.hpp"

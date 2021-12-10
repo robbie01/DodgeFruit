@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 constexpr float GAME_SCALE = 3;
 constexpr float MENU_SCALE = 4;
 constexpr int SCREEN_SIZE_X = 320;

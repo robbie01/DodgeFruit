@@ -1,9 +1,8 @@
 // Sprite class
 // Paige Mickol
 
-#include <cstring>
+#include <string>
 #include <fstream>
-#include <iostream>
 
 #include "Constants.hpp"
 #include "Vector.hpp"

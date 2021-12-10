@@ -6,9 +6,7 @@
 #include "Sprite.hpp"
 #include "Fruit.hpp"
 
-#include <cstring>
-#include <fstream>
-#include <iostream>
+#include <string>
 
 extern "C" {
 #include <math.h>
