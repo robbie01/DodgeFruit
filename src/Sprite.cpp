@@ -10,7 +10,9 @@
 #include "LCD.hpp"
 #include "Sprite.hpp"
 
-Sprite::Sprite(std::string spriteName, const Vector2 &spriteSize) : pos(0, 0), size(spriteSize), scale(GAME_SCALE), anchorPoint(0, 0) {
+Sprite::Sprite(std::string spriteName, const Vector2 &spriteSize) :
+    pos(0, 0), size(spriteSize), scale(GAME_SCALE), anchorPoint(0, 0)
+{
     swapImage(spriteName, spriteSize);
 }
 
