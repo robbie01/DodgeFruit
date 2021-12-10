@@ -10,6 +10,8 @@
 void Screen::init() {}
 
 ScreenUpdateReturn Screen::update() {
+    LCD.Update();
+
     SDL_Event ev;
     while (SDL_PollEvent(&ev)) {
         switch (ev.type) {
@@ -47,11 +49,11 @@ void MenuScreen::init() {
 
     credits.scale = MENU_SCALE;
     credits.move(Vector2(52, 41) * MENU_SCALE);
-
-    LCD.Update();
 }
 
 ScreenUpdateReturn MenuScreen::update() {
+    LCD.Update();
+
     SDL_Event ev;
     while (SDL_PollEvent(&ev)) {
         switch (ev.type) {
@@ -185,10 +187,11 @@ BackButtonScreen::BackButtonScreen() :
 
 void BackButtonScreen::init() {
     backButton.draw();
-    LCD.Update();
 }
 
 ScreenUpdateReturn BackButtonScreen::update() {
+    LCD.Update();
+
     SDL_Event ev;
     while (SDL_PollEvent(&ev)) {
         switch (ev.type) {
@@ -313,11 +316,11 @@ void GameOverScreen::init() {
     // write final time to screen
     LCD.color = CYAN;
     LCD.WriteAt(score, 187, 166);
-
-    LCD.Update();
 }
 
 ScreenUpdateReturn GameOverScreen::update() {
+    LCD.Update();
+
     SDL_Event ev;
     while (SDL_PollEvent(&ev)) {
         switch (ev.type) {
