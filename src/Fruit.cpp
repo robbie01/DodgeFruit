@@ -15,12 +15,27 @@ extern "C" {
 // libstdc++ bug, doesn't implement std::sinf and std::cosf
 }
 
-// fruit types!
-static Vector2 applepos(float t, Vector2 offset);
-static Vector2 tangerinePos(float t, Vector2 offset);
-static Vector2 strawberryPos(float t, Vector2 offset);
-static Vector2 watermelonpos(float t, Vector2 offset);
-static Vector2 lemonpos(float t, Vector2 offset);
+static Vector2 fruitpos(float t, Vector2 offset, Fruit::FruitType type) {
+    switch (type) {
+    case Fruit::APPLE:
+        // star
+        return Vector2(SCREEN_SIZE_Y/2 * powf(cosf(t),5) + offset.x(), SCREEN_SIZE_Y/2 * powf(sinf(t),5) + offset.y());
+    case Fruit::TANGERINE:
+        // diamond
+        return Vector2(SCREEN_SIZE_Y/2 * t + offset.x(), SCREEN_SIZE_Y/2 * sinf(t) + offset.y());
+    case Fruit::STRAWBERRY:
+        // sin wave (broken)
+        return Vector2();
+    case Fruit::WATERMELON:
+        // infinity
+        return Vector2(SCREEN_SIZE_Y/2 * cosf(t) + offset.x(), SCREEN_SIZE_Y/2*((sinf(2*t))/2) + offset.y());
+    case Fruit::LEMON:
+        // circle
+        return Vector2(SCREEN_SIZE_Y/2 * cosf(t) + offset.x(), SCREEN_SIZE_Y/2 * sinf(t) + offset.y());
+    default:
+        return Vector2();
+    }
+}
 
 static std::string fruittype_str(Fruit::FruitType type) {
     switch (type) {
@@ -41,42 +56,9 @@ void Fruit::stepPath(float dt) {
     t_ += dt * speed_;
 
     // pick function based on fruit type
-    if(type_ == APPLE) {
-        sprite_.move(applepos(t_, offset_));
-    } else if (type_ == WATERMELON) {
-        sprite_.move(watermelonpos(t_, offset_));
-    } else if (type_ == LEMON) {
-        sprite_.move(lemonpos(t_, offset_));
-    } else if (type_ == TANGERINE) {
-        sprite_.move(tangerinePos(t_, offset_));
-    }
+    sprite_.move(fruitpos(t_, offset_, type_));
 }
 
 Sprite &Fruit::sprite() {
     return sprite_;
-}
-
-// star
-static Vector2 applepos(float t, Vector2 offset) {
-    return Vector2(SCREEN_SIZE_Y/2 * powf(cosf(t),5) + offset.x(), SCREEN_SIZE_Y/2 * powf(sinf(t),5) + offset.y());
-}
-
-// diamond
-static Vector2 tangerinePos(float t, Vector2 offset) {
-    return Vector2(SCREEN_SIZE_Y/2 * t + offset.x(), SCREEN_SIZE_Y/2 * sinf(t) + offset.y());
-}
-
-// sin wave
-static Vector2 strawberryPos(float t, Vector2 offset) {
-    return Vector2();
-}
-
-// infinity
-static Vector2 watermelonpos(float t, Vector2 offset) {
-    return Vector2(SCREEN_SIZE_Y/2 * cosf(t) + offset.x(), SCREEN_SIZE_Y/2*((sinf(2*t))/2) + offset.y());
-}
-
-// circle
-static Vector2 lemonpos(float t, Vector2 offset) {
-    return Vector2(SCREEN_SIZE_Y/2 * cosf(t) + offset.x(), SCREEN_SIZE_Y/2 * sinf(t) + offset.y());
 }

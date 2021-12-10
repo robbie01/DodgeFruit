@@ -41,6 +41,7 @@ public:
 
 class BackButtonScreen : public Screen {
     Sprite backButton;
+    bool touching;
 public:
     BackButtonScreen();
     virtual void init();

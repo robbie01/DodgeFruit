@@ -176,7 +176,8 @@ ScreenUpdateReturn GameplayScreen::update() {
 }
 
 BackButtonScreen::BackButtonScreen() :
-    backButton("menu/back_button", Vector2(16, 8))
+    backButton("menu/back_button", Vector2(16, 8)),
+    touching(false)
 {
     backButton.anchorPoint = Vector2(0, 1);
     backButton.pos = Vector2(8, SCREEN_SIZE_Y - 8);
@@ -196,10 +197,13 @@ ScreenUpdateReturn BackButtonScreen::update() {
         case SDL_WINDOWEVENT:
             if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) LCD.Update();
             break;
-        case SDL_MOUSEBUTTONDOWN: {
+        case SDL_MOUSEBUTTONDOWN:
+            if (ev.button.button == SDL_BUTTON_LEFT) touching = true;
+            break;
+        case SDL_MOUSEBUTTONUP: {
             SDL_MouseButtonEvent mev = ev.button;
             WindowSize sz = LCD.size();
-            if (mev.button == SDL_BUTTON_LEFT && backButton.isPointWithin(Vector2(mev.x*SCREEN_SIZE_X/sz.w, mev.y*SCREEN_SIZE_Y/sz.h)))
+            if (mev.button == SDL_BUTTON_LEFT && touching && backButton.isPointWithin(Vector2(mev.x*SCREEN_SIZE_X/sz.w, mev.y*SCREEN_SIZE_Y/sz.h)))
                 return ScreenPtr(new MenuScreen);
         }
         default:

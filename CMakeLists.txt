@@ -12,7 +12,7 @@ add_executable(DodgeFruit ${SOURCES})
 set_target_properties(DodgeFruit PROPERTIES CXX_STANDARD 17)
 target_link_libraries(DodgeFruit m)
 
-if( ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
     set(USE_FLAGS "-s USE_SDL=2")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USE_FLAGS}")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${USE_FLAGS}")
