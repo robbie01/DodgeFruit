@@ -8,6 +8,11 @@
 template <typename T>
 using SDLWrap = std::unique_ptr<T, std::function<void(T*)>>;
 
+struct WindowSize {
+    int w;
+    int h;
+};
+
 class LCDClass {
     SDLWrap<SDL_Window> win;
     SDLWrap<SDL_Renderer> ren;
@@ -38,6 +43,8 @@ public:
         out << std::fixed << z;
         WriteAt(out.str(), x, y);
     }
+
+    WindowSize size();
 };
 
 constexpr int BLACK = 0;

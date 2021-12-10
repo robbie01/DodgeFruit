@@ -8,5 +8,3 @@ constexpr int SPRITE_SIZE_X = (double)SCREEN_SIZE_X / GAME_SCALE;
 constexpr int SPRITE_SIZE_Y = (double)SCREEN_SIZE_Y / GAME_SCALE;
 constexpr float FRUIT_SIZE = 16.f;
 constexpr float TIME_BETWEEN_FRUITS = 2.f;
-
-constexpr int PIXEL_SCALE = 3;

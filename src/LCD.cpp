@@ -104,11 +104,13 @@ static unsigned char fontData[] = {
     0x08, 0x1C, 0x2A, 0x08, 0x08  // <-
 };
 
+constexpr int INIT_PIXEL_SCALE = 3;
+
 LCDClass::LCDClass() {
     SDL_Window *pwin;
     SDL_Renderer *pren;
     SDL_Texture *ptex;
-    pwin = SDL_CreateWindow("Dodge Fruit", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_SIZE_X*PIXEL_SCALE, SCREEN_SIZE_Y*PIXEL_SCALE, 0);
+    pwin = SDL_CreateWindow("Dodge Fruit", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_SIZE_X*INIT_PIXEL_SCALE, SCREEN_SIZE_Y*INIT_PIXEL_SCALE, SDL_WINDOW_RESIZABLE);
     pren = SDL_CreateRenderer(pwin, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(pren, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
     ptex = SDL_CreateTexture(pren, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_STREAMING, SCREEN_SIZE_X, SCREEN_SIZE_Y);
@@ -155,9 +157,7 @@ void LCDClass::Clear() {
     SDL_LockTexture(tex.get(), NULL, &pixels, &pitch);
     for (int y = 0; y < SCREEN_SIZE_Y; ++y) {
         int *row = (int*)((char*)pixels+y*pitch);
-        for (int x = 0; x < SCREEN_SIZE_X; ++x) {
-            row[x] = bgcolor | 0xFF000000;
-        }
+        std::fill_n(row, SCREEN_SIZE_X, bgcolor | 0xFF000000);  
     }
     SDL_UnlockTexture(tex.get());
 }
@@ -210,4 +210,10 @@ void LCDClass::WriteAt(std::string s, int x, int y) {
     for (char c : s) {
         WriteAt(c, x+i++*12, y);
     }
+}
+
+WindowSize LCDClass::size() {
+    WindowSize sz;
+    SDL_GetWindowSize(win.get(), &sz.w, &sz.h);
+    return sz;
 }

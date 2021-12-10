@@ -57,10 +57,14 @@ ScreenUpdateReturn MenuScreen::update() {
         switch (ev.type) {
         case SDL_QUIT:
             return std::monostate();
+        case SDL_WINDOWEVENT:
+            if (ev.window.event == SDL_WINDOWEVENT_RESIZED) LCD.Update();
+            break;
         case SDL_MOUSEBUTTONDOWN: {
             SDL_MouseButtonEvent mev = ev.button;
+            WindowSize sz = LCD.size();
             if (mev.button != SDL_BUTTON_LEFT) break;
-            Vector2 screenPoint(mev.x/PIXEL_SCALE, mev.y/PIXEL_SCALE);
+            Vector2 screenPoint(mev.x*SCREEN_SIZE_X/sz.w, mev.y*SCREEN_SIZE_Y/sz.h);
             if (play.isPointWithin(screenPoint)) {
                 return ScreenPtr(new GameplayScreen);
             } else if (stats.isPointWithin(screenPoint)) {
@@ -117,7 +121,8 @@ static Fruit makeRandomFruit() {
 ScreenUpdateReturn GameplayScreen::update() {
     LCD.Clear();
 
-    Vector2 mousePos(xpos / PIXEL_SCALE, ypos / PIXEL_SCALE);
+    WindowSize sz = LCD.size();
+    Vector2 mousePos(xpos*SCREEN_SIZE_X/sz.w, ypos*SCREEN_SIZE_Y/sz.h);
     character.move(mousePos);
 
     auto now = std::chrono::system_clock::now();
@@ -151,6 +156,9 @@ ScreenUpdateReturn GameplayScreen::update() {
         switch (ev.type) {
         case SDL_QUIT:
             return std::monostate();
+        case SDL_WINDOWEVENT:
+            if (ev.window.event == SDL_WINDOWEVENT_RESIZED) LCD.Update();
+            break;
         case SDL_MOUSEBUTTONUP:
             if (ev.button.button == SDL_BUTTON_LEFT) return ScreenPtr(new GameOverScreen(playerTime));
         case SDL_MOUSEMOTION: {
@@ -185,9 +193,13 @@ ScreenUpdateReturn BackButtonScreen::update() {
         switch (ev.type) {
         case SDL_QUIT:
             return std::monostate();
+        case SDL_WINDOWEVENT:
+            if (ev.window.event == SDL_WINDOWEVENT_RESIZED) LCD.Update();
+            break;
         case SDL_MOUSEBUTTONDOWN: {
             SDL_MouseButtonEvent mev = ev.button;
-            if (mev.button == SDL_BUTTON_LEFT && backButton.isPointWithin(Vector2(mev.x/PIXEL_SCALE, mev.y/PIXEL_SCALE)))
+            WindowSize sz = LCD.size();
+            if (mev.button == SDL_BUTTON_LEFT && backButton.isPointWithin(Vector2(mev.x*SCREEN_SIZE_X/sz.w, mev.y*SCREEN_SIZE_Y/sz.h)))
                 return ScreenPtr(new MenuScreen);
         }
         default:
@@ -307,6 +319,9 @@ ScreenUpdateReturn GameOverScreen::update() {
         switch (ev.type) {
         case SDL_QUIT:
             return std::monostate();
+        case SDL_WINDOWEVENT:
+            if (ev.window.event == SDL_WINDOWEVENT_RESIZED) LCD.Update();
+            break;
         case SDL_MOUSEBUTTONDOWN:
             if (ev.button.button == SDL_BUTTON_LEFT) touching = true;
             break;
