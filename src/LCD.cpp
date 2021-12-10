@@ -164,7 +164,7 @@ void LCDClass::WriteAt(char c, int x, int y) {
         for (int row = 0; row < 7; row++)
         {
             // If the current pixel is a 1 in the fontData bitmap
-            if (((charData[col] >> row) & 0x01) == 1)
+            if (charData[col] & (1 << row))
             {
                 
                 tgt.x = x + col*2;
