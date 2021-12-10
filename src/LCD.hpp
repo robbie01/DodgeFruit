@@ -1,13 +1,17 @@
 #pragma once
 
 #include <sstream>
+#include <memory>
+#include <functional>
 #include "SDL.hpp"
 
+template <typename T>
+using SDLWrap = std::unique_ptr<T, std::function<void(T*)>>;
+
 class LCDClass {
-    LCDClass();
-    ~LCDClass();
-    SDL_Window *win;
-    SDL_Surface *scr;
+    SDLWrap<SDL_Window> win;
+    SDLWrap<SDL_Renderer> ren;
+    SDLWrap<SDL_Texture> tex;
 public:
     int color, bgcolor;
 
@@ -15,6 +19,8 @@ public:
 
     LCDClass(LCDClass const&) = delete;
     void operator=(LCDClass const&) = delete;
+
+    LCDClass();
 
     void SetFontColor(int);
     void SetBackgroundColor(int);

@@ -1,6 +1,7 @@
 #include "SDL.hpp"
 #include <iostream>
 #include <string>
+#include <algorithm>
 #include "Constants.hpp"
 #include "LCD.hpp"
 
@@ -104,15 +105,17 @@ static unsigned char fontData[] = {
 };
 
 LCDClass::LCDClass() {
-    win = SDL_CreateWindow("Dodge Fruit",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        SCREEN_SIZE_X*PIXEL_SCALE, SCREEN_SIZE_Y*PIXEL_SCALE,
-        0);
-    scr = SDL_GetWindowSurface(win);
-}
+    SDL_Window *pwin;
+    SDL_Renderer *pren;
+    SDL_Texture *ptex;
+    pwin = SDL_CreateWindow("Dodge Fruit", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_SIZE_X*PIXEL_SCALE, SCREEN_SIZE_Y*PIXEL_SCALE, 0);
+    pren = SDL_CreateRenderer(pwin, -1, SDL_RENDERER_ACCELERATED);
+    SDL_SetRenderDrawColor(pren, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
+    ptex = SDL_CreateTexture(pren, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_STREAMING, SCREEN_SIZE_X, SCREEN_SIZE_Y);
 
-LCDClass::~LCDClass() {
-    SDL_DestroyWindow(win);
+    win = SDLWrap<SDL_Window>(pwin, SDL_DestroyWindow);
+    ren = SDLWrap<SDL_Renderer>(pren, SDL_DestroyRenderer);
+    tex = SDLWrap<SDL_Texture>(ptex, SDL_DestroyTexture);
 }
 
 LCDClass &LCDClass::getInstance() {
@@ -130,18 +133,30 @@ void LCDClass::SetBackgroundColor(int bgcolor) {
 
 void LCDClass::DrawPixel(int x, int y) {
     SDL_Rect target { 
-        .x = (x % SCREEN_SIZE_X)*PIXEL_SCALE,
-        .y = (y % SCREEN_SIZE_Y)*PIXEL_SCALE,
-        .w = PIXEL_SCALE, .h = PIXEL_SCALE };
-    SDL_FillRect(scr, &target, color);
+        .x = (x % SCREEN_SIZE_X),
+        .y = (y % SCREEN_SIZE_Y),
+        .w = 1, .h = 1 };
+    //SDL_FillRect(SDL_GetWindowSurface(win.get()), &target, color);
+    void *pixels;
+    int pitch;
+    SDL_LockTexture(tex.get(), &target, &pixels, &pitch);
+    ((int*)(pixels))[0] = color | 0xFF000000;
+    SDL_UnlockTexture(tex.get());
 }
 
 void LCDClass::Update() {
-    SDL_UpdateWindowSurface(win);
+    //SDL_UpdateWindowSurface(win.get());
+    SDL_RenderClear(ren.get());
+    SDL_RenderCopy(ren.get(), tex.get(), NULL, NULL);
+    SDL_RenderPresent(ren.get());
 }
 
 void LCDClass::Clear() {
-    SDL_FillRect(scr, NULL, bgcolor);
+    //SDL_FillRect(SDL_GetWindowSurface(win.get()), NULL, bgcolor);
+    SDL_Surface *sur;
+    SDL_LockTextureToSurface(tex.get(), NULL, &sur);
+    SDL_FillRect(sur, NULL, bgcolor | 0xFF000000);
+    SDL_UnlockTexture(tex.get());
 }
 
 void LCDClass::WriteAt(char c, int x, int y) {
@@ -159,7 +174,7 @@ void LCDClass::WriteAt(char c, int x, int y) {
 
     x += 2;
 
-    SDL_Rect tgt { .x = 0, .y = 0, .w = 2*PIXEL_SCALE, .h = 2*PIXEL_SCALE };
+    SDL_Rect tgt { .x = 0, .y = 0, .w = 2, .h = 2 };
 
     for (int col = 0; col < 5; col++)
     {
@@ -168,10 +183,16 @@ void LCDClass::WriteAt(char c, int x, int y) {
             // If the current pixel is a 1 in the fontData bitmap
             if (((charData[col] >> row) & 0x01) == 1)
             {
-                tgt.x = (x + col*2) * PIXEL_SCALE;
-                tgt.y = (y + row*2) * PIXEL_SCALE;
+                
+                tgt.x = x + col*2;
+                tgt.y = y + row*2;
                 // Draw a 2x2 rectangle to represent each pixel since sizes are doubled
-                SDL_FillRect(scr, &tgt, color);
+                //SDL_FillRect(SDL_GetWindowSurface(win.get()), &tgt, color);
+                
+                SDL_Surface *sur;
+                SDL_LockTextureToSurface(tex.get(), &tgt, &sur);
+                SDL_FillRect(sur, NULL, color | 0xFF000000);
+                SDL_UnlockTexture(tex.get());
             }
         }
     }
