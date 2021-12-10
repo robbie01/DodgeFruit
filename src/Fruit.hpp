@@ -5,6 +5,8 @@
 
 class Fruit {
     public:
+        Sprite sprite;
+
         enum FruitType {
             APPLE,
             TANGERINE,
@@ -15,10 +17,8 @@ class Fruit {
 
         Fruit(FruitType, float, const Vector2&);
         void stepPath(float dt);
-        Sprite &sprite();
 
     private:
-        Sprite sprite_;
         FruitType type_;
         float t_;
         float speed_;

@@ -45,7 +45,7 @@ void Sprite::draw() {
 
             // draw pixel on the screen
             if (!transparent) {
-                LCD.SetFontColor(color);
+                LCD.color = color;
                 drawScaledPixel(pos + Vector2(i, j) * scale);
             }
 

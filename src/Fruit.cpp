@@ -47,16 +47,12 @@ static std::string fruittype_str(Fruit::FruitType type) {
 }
 
 Fruit::Fruit(FruitType type, float speed, const Vector2 &offset) :
-    sprite_("fruits/" + fruittype_str(type), FRUIT_SIZE), offset_(offset), type_(type), speed_(speed), t_(0) {}
+    sprite("fruits/" + fruittype_str(type), FRUIT_SIZE), offset_(offset), type_(type), speed_(speed), t_(0) {}
 
 void Fruit::stepPath(float dt) {
     // time * speed = position
     t_ += dt * speed_;
 
     // pick function based on fruit type
-    sprite_.move(fruitpos(t_, offset_, type_));
-}
-
-Sprite &Fruit::sprite() {
-    return sprite_;
+    sprite.move(fruitpos(t_, offset_, type_));
 }

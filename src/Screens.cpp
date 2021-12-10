@@ -30,7 +30,7 @@ MenuScreen::MenuScreen() :
     credits("menu/credits_button", Vector2(26, 15)) {}
 
 void MenuScreen::init() {
-    LCD.SetBackgroundColor(BLACK);
+    LCD.bgcolor = BLACK;
     LCD.Clear();
 
     logo.scale = MENU_SCALE;
@@ -96,7 +96,7 @@ GameplayScreen::GameplayScreen() :
 
 void GameplayScreen::init() {
     SDL_GetMouseState(&xpos, &ypos);
-    LCD.SetBackgroundColor(BLACK);
+    LCD.bgcolor = BLACK;
 }
 
 static Fruit makeRandomFruit() {
@@ -113,8 +113,8 @@ static Fruit makeRandomFruit() {
 
     // make the fruit and scale it
     Fruit newFruit(chosenFruit, speed, spawnPos);
-    newFruit.sprite().anchorPoint = Vector2(0.5, 0.5);
-    newFruit.sprite().scale = 2;
+    newFruit.sprite.anchorPoint = Vector2(0.5, 0.5);
+    newFruit.sprite.scale = 2;
 
     return newFruit;
 }
@@ -133,7 +133,7 @@ ScreenUpdateReturn GameplayScreen::update() {
 
     for(Fruit &f : projectiles) {
         f.stepPath(dt);
-        if(f.sprite().isPointWithin(mousePos)) {
+        if(f.sprite.isPointWithin(mousePos)) {
             return ScreenPtr(new GameOverScreen(playerTime));
         }
     }
@@ -214,7 +214,7 @@ ScreenUpdateReturn BackButtonScreen::update() {
 }
 
 void HowtoScreen::init() {
-    LCD.SetBackgroundColor(BLACK);
+    LCD.bgcolor = BLACK;
     LCD.Clear();
 
     // draw howto screen in the middle
@@ -228,7 +228,7 @@ void HowtoScreen::init() {
 }
 
 void CreditsScreen::init() {
-    LCD.SetBackgroundColor(BLACK);
+    LCD.bgcolor = BLACK;
     LCD.Clear();
 
     Sprite creditsBack("menu/credits_background", Vector2(80, 60));
@@ -271,7 +271,7 @@ StatsScreen::StatsScreen() :
     highScore(playerHighScore()), gameCounter(gameCount()) {}
 
 void StatsScreen::init() {
-    LCD.SetBackgroundColor(BLACK);
+    LCD.bgcolor = BLACK;
     LCD.Clear();
 
     // draw stats background in the center of the screen
@@ -282,11 +282,11 @@ void StatsScreen::init() {
     statsBack.draw();
 
     //display high score
-    LCD.SetFontColor(BLACK);
+    LCD.color = BLACK;
     LCD.WriteAt(highScore, 200, 91);
 
     //display game count
-    LCD.SetFontColor(BLACK);
+    LCD.color = BLACK;
     LCD.WriteAt(gameCounter, 250, 130);
 
     BackButtonScreen::init();
@@ -303,7 +303,7 @@ GameOverScreen::GameOverScreen(float score) : score(score), touching(false) {
 }
 
 void GameOverScreen::init() {
-    LCD.SetBackgroundColor(BLACK);
+    LCD.bgcolor = BLACK;
     LCD.Clear();
 
     Sprite gameOverScreen("menu/game_over_background", Vector2(80, 60));
@@ -311,7 +311,7 @@ void GameOverScreen::init() {
     gameOverScreen.move(Vector2(SCREEN_SIZE_X/2, SCREEN_SIZE_Y/2));
 
     // write final time to screen
-    LCD.SetFontColor(CYAN);
+    LCD.color = CYAN;
     LCD.WriteAt(score, 187, 166);
 
     LCD.Update();

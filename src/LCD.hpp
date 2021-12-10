@@ -28,8 +28,6 @@ public:
 
     LCDClass();
 
-    void SetFontColor(pixel_t);
-    void SetBackgroundColor(pixel_t);
     void Clear();
     void DrawPixel(int, int);
     void Update();
