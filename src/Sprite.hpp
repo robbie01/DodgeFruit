@@ -17,5 +17,4 @@ public:
 	void swapImage(std::string, const Vector2&);
 	void draw();
 	bool isPointWithin(const Vector2&);
-	void scale_ar(int);
 };

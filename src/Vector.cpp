@@ -35,7 +35,7 @@ Vector2 &Vector2::operator+=(const Vector2& that) {
 
 // overload -x
 Vector2 Vector2::operator-() const {
-    return Vector2(-(x), -(y));
+    return Vector2(-x, -y);
 }
 
 // overload x-y
