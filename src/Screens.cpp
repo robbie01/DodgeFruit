@@ -163,6 +163,7 @@ ScreenUpdateReturn GameplayScreen::update() {
             break;
         case SDL_MOUSEBUTTONUP:
             if (ev.button.button == SDL_BUTTON_LEFT) return ScreenPtr(new GameOverScreen(playerTime));
+            break;
         case SDL_MOUSEMOTION: {
             SDL_MouseMotionEvent mev = ev.motion;
             xpos = mev.x;

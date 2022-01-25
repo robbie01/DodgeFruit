@@ -9,8 +9,14 @@ project(DodgeFruit)
 file(GLOB SOURCES src/*.cpp)
 
 add_executable(DodgeFruit ${SOURCES})
-set_target_properties(DodgeFruit PROPERTIES CXX_STANDARD 17)
+set_target_properties(DodgeFruit PROPERTIES CXX_STANDARD 20 CXX_STANDARD_REQUIRED ON CXX_EXTENSIONS OFF)
 target_link_libraries(DodgeFruit m)
+
+if(MSVC)
+    target_compile_options(DodgeFruit PRIVATE /W4 /WX)
+else()
+    target_compile_options(DodgeFruit PRIVATE -W -Wall -Wextra -pedantic)
+endif()
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
     set(USE_FLAGS "-s USE_SDL=2")

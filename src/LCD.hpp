@@ -8,7 +8,7 @@
 template <typename T>
 using SDLWrap = std::unique_ptr<T, std::function<void(T*)>>;
 
-using pixel_t = std::uint32_t;
+using pixel_t = std::int32_t;
 
 struct WindowSize {
     int w;
