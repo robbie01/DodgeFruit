@@ -127,7 +127,21 @@ void LCDClass::DrawPixel(int x, int y) {
 }
 
 void LCDClass::Update() {
-    SDL_BlitScaled(sur.get(), NULL, SDL_GetWindowSurface(win.get()), NULL);
+    SDL_Surface *winsur = SDL_GetWindowSurface(win.get());
+    SDL_FillRect(winsur, NULL, 0);
+    SDL_Rect dst;
+    if (winsur->w > winsur->h * SCREEN_SIZE_X / SCREEN_SIZE_Y) {
+        dst.w = winsur->h * SCREEN_SIZE_X / SCREEN_SIZE_Y;
+        dst.h = winsur->h;
+        dst.x = (winsur->w - dst.w) / 2;
+        dst.y = 0;
+    } else {
+        dst.w = winsur->w;
+        dst.h = winsur->w * SCREEN_SIZE_Y / SCREEN_SIZE_X;
+        dst.x = 0;
+        dst.y = (winsur->h - dst.h) / 2;
+    }
+    SDL_BlitScaled(sur.get(), NULL, winsur, &dst);
     SDL_UpdateWindowSurface(win.get());
 }
 
