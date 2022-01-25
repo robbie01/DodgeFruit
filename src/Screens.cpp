@@ -61,9 +61,6 @@ ScreenUpdateReturn MenuScreen::update() {
         switch (ev.type) {
         case SDL_QUIT:
             return std::monostate();
-        case SDL_WINDOWEVENT:
-            if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) LCD.Update();
-            break;
         case SDL_MOUSEBUTTONDOWN: {
             SDL_MouseButtonEvent mev = ev.button;
             WindowSize sz = LCD.size();
@@ -160,9 +157,6 @@ ScreenUpdateReturn GameplayScreen::update() {
         switch (ev.type) {
         case SDL_QUIT:
             return std::monostate();
-        case SDL_WINDOWEVENT:
-            if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) LCD.Update();
-            break;
         case SDL_MOUSEBUTTONUP:
             if (ev.button.button == SDL_BUTTON_LEFT) return ScreenPtr(new GameOverScreen(playerTime));
             break;
@@ -200,9 +194,6 @@ ScreenUpdateReturn BackButtonScreen::update() {
         switch (ev.type) {
         case SDL_QUIT:
             return std::monostate();
-        case SDL_WINDOWEVENT:
-            if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) LCD.Update();
-            break;
         case SDL_MOUSEBUTTONDOWN:
             if (ev.button.button == SDL_BUTTON_LEFT) touching = true;
             break;
@@ -329,9 +320,6 @@ ScreenUpdateReturn GameOverScreen::update() {
         switch (ev.type) {
         case SDL_QUIT:
             return std::monostate();
-        case SDL_WINDOWEVENT:
-            if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) LCD.Update();
-            break;
         case SDL_MOUSEBUTTONDOWN:
             if (ev.button.button == SDL_BUTTON_LEFT) touching = true;
             break;
