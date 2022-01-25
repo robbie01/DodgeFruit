@@ -49,4 +49,4 @@ public:
 constexpr pixel_t BLACK = 0;
 constexpr pixel_t CYAN = 0x00FFFF;
 
-#define LCD (LCDClass::getInstance())
+static LCDClass &LCD = LCDClass::getInstance();
