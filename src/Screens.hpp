@@ -15,6 +15,8 @@ using ScreenUpdateReturn = std::variant<std::monostate, ScreenPtr>;
 
 class Screen {
 public:
+    virtual ~Screen();
+
     virtual void init();
     virtual ScreenUpdateReturn update();
 };

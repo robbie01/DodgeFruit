@@ -7,6 +7,8 @@
 #include "Vector.hpp"
 #include "LCD.hpp"
 
+Screen::~Screen() {}
+
 void Screen::init() {}
 
 ScreenUpdateReturn Screen::update() {
