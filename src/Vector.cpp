@@ -12,7 +12,7 @@ extern "C" {
 }
 
 // a small delta (used for comparing floats due to floating point inaccuracies)
-#define DELTA 0.00001
+constexpr float DELTA = 0.00001;
 
 /*
  * A 2D Vector class used to control positions and sizes of sprites on the screen
