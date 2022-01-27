@@ -18,6 +18,8 @@ struct WindowSize {
 class LCDClass {
     SDLWrap<SDL_Window> win;
     SDLWrap<SDL_Surface> sur;
+    SDLWrap<SDL_Texture> tex;
+    SDLWrap<SDL_Renderer> ren;
 public:
     pixel_t color, bgcolor;
 

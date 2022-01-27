@@ -108,11 +108,17 @@ constexpr int INIT_PIXEL_SCALE = 3;
 LCDClass::LCDClass() {
     SDL_Window *pwin;
     SDL_Surface *psur;
+    SDL_Renderer *pren;
+    SDL_Texture *ptex;
     pwin = SDL_CreateWindow("Dodge Fruit", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_SIZE_X*INIT_PIXEL_SCALE, SCREEN_SIZE_Y*INIT_PIXEL_SCALE, SDL_WINDOW_RESIZABLE);
     psur = SDL_CreateRGBSurface(0, SCREEN_SIZE_X, SCREEN_SIZE_Y, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0);
+    pren = SDL_CreateRenderer(pwin, -1, SDL_RENDERER_PRESENTVSYNC);
+    ptex = SDL_CreateTexture(pren, SDL_PIXELFORMAT_RGBX8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_SIZE_X, SCREEN_SIZE_Y);
 
     win = SDLWrap<SDL_Window>(pwin, SDL_DestroyWindow);
     sur = SDLWrap<SDL_Surface>(psur, SDL_FreeSurface);
+    ren = SDLWrap<SDL_Renderer>(pren, SDL_DestroyRenderer);
+    tex = SDLWrap<SDL_Texture>(ptex, SDL_DestroyTexture);
 }
 
 LCDClass &LCDClass::getInstance() {
@@ -127,22 +133,35 @@ void LCDClass::DrawPixel(int x, int y) {
 }
 
 void LCDClass::Update() {
-    SDL_Surface *winsur = SDL_GetWindowSurface(win.get());
-    SDL_FillRect(winsur, NULL, 0);
+    void *texpix;
+    int pitch;
+    SDL_LockTexture(tex.get(), nullptr, &texpix, &pitch);
+
+    for (int y = 0; y < SCREEN_SIZE_Y; ++y) {
+        for (int x = 0; x < SCREEN_SIZE_X; ++x) {
+            ((uint32_t*)((char*)texpix+y*pitch))[x] = ((pixel_t*)((char*)sur->pixels+y*sur->pitch))[x] << 8;
+        }
+    }
+
+    SDL_UnlockTexture(tex.get());
+
+    WindowSize sz = size();
+
     SDL_Rect dst;
-    if (winsur->w > winsur->h * SCREEN_SIZE_X / SCREEN_SIZE_Y) {
-        dst.w = winsur->h * SCREEN_SIZE_X / SCREEN_SIZE_Y;
-        dst.h = winsur->h;
-        dst.x = (winsur->w - dst.w) / 2;
+    if (sz.w > sz.h * SCREEN_SIZE_X / SCREEN_SIZE_Y) {
+        dst.w = sz.h * SCREEN_SIZE_X / SCREEN_SIZE_Y;
+        dst.h = sz.h;
+        dst.x = (sz.w - dst.w) / 2;
         dst.y = 0;
     } else {
-        dst.w = winsur->w;
-        dst.h = winsur->w * SCREEN_SIZE_Y / SCREEN_SIZE_X;
+        dst.w = sz.w;
+        dst.h = sz.w * SCREEN_SIZE_Y / SCREEN_SIZE_X;
         dst.x = 0;
-        dst.y = (winsur->h - dst.h) / 2;
+        dst.y = (sz.h - dst.h) / 2;
     }
-    SDL_BlitScaled(sur.get(), NULL, winsur, &dst);
-    SDL_UpdateWindowSurface(win.get());
+    SDL_RenderClear(ren.get());
+    SDL_RenderCopy(ren.get(), tex.get(), nullptr, &dst);
+    SDL_RenderPresent(ren.get());
 }
 
 void LCDClass::Clear() {
