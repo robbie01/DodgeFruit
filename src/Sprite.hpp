@@ -12,6 +12,8 @@ class Sprite {
 public:
 	Vector2 pos, size, scale, anchorPoint;
 
+	bool nowrap;
+
 	Sprite(std::string, const Vector2&);
 	void move(const Vector2&);
 	void swapImage(std::string, const Vector2&);

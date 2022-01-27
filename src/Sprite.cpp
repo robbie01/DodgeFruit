@@ -10,7 +10,7 @@
 #include "Sprite.hpp"
 
 Sprite::Sprite(std::string spriteName, const Vector2 &spriteSize) :
-    pos(0, 0), size(spriteSize), scale(GAME_SCALE), anchorPoint(0, 0)
+    pos(0, 0), size(spriteSize), scale(GAME_SCALE), anchorPoint(0, 0), nowrap(false)
 {
     swapImage(spriteName, spriteSize);
 }
@@ -82,7 +82,7 @@ void Sprite::drawScaledPixel(Vector2 drawPos) const {
 
     for(int i = 0; i < scale.x; i++) {
         for(int j = 0; j < scale.y; j++) {
-            LCD.DrawPixel(drawPos.x + i, drawPos.y + j);
+            LCD.DrawPixel(drawPos.x + i, drawPos.y + j, nowrap);
         }
     }
 }

@@ -31,7 +31,7 @@ public:
     LCDClass();
 
     void Clear();
-    void DrawPixel(int, int);
+    void DrawPixel(int, int, bool);
     void Update();
 
     void WriteAt(char, int, int);

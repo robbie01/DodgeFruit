@@ -93,6 +93,7 @@ GameplayScreen::GameplayScreen() :
 {
     character.anchorPoint = Vector2(0.5, 0.5);
     character.scale = 2;
+    character.nowrap = true;
 }
 
 void GameplayScreen::init() {
@@ -124,7 +125,23 @@ ScreenUpdateReturn GameplayScreen::update() {
     LCD.Clear();
 
     WindowSize sz = LCD.size();
-    Vector2 mousePos(xpos*SCREEN_SIZE_X/sz.w, ypos*SCREEN_SIZE_Y/sz.h);
+    float w, h, woff, hoff;
+    if (sz.w > sz.h * SCREEN_SIZE_X / SCREEN_SIZE_Y) {
+        w = sz.h * SCREEN_SIZE_X / SCREEN_SIZE_Y;
+        h = sz.h;
+        woff = (sz.w-w)/2.f;
+        hoff = 0.f;
+    } else {
+        w = sz.w;
+        h = sz.w * SCREEN_SIZE_Y / SCREEN_SIZE_X;
+        woff = 0.f;
+        hoff = (sz.h-h)/2.f;
+    }
+    Vector2 mousePos((xpos-woff)*SCREEN_SIZE_X/w, (ypos-hoff)*SCREEN_SIZE_Y/h);
+    if (mousePos.x < 0) mousePos.x = 0;
+    else if (mousePos.x >= SCREEN_SIZE_X) mousePos.x = SCREEN_SIZE_X - 1;
+    if (mousePos.y < 0) mousePos.y = 0;
+    else if (mousePos.y >= SCREEN_SIZE_Y) mousePos.y = SCREEN_SIZE_Y - 1;
     character.move(mousePos);
 
     auto now = std::chrono::system_clock::now();
