@@ -7,6 +7,23 @@
 #include "Vector.hpp"
 #include "LCD.hpp"
 
+static Vector2 adjustMousePos(int xpos, int ypos) {
+    WindowSize sz = LCD.size();
+    float w, h, woff, hoff;
+    if (sz.w > sz.h * SCREEN_SIZE_X / SCREEN_SIZE_Y) {
+        w = sz.h * SCREEN_SIZE_X / SCREEN_SIZE_Y;
+        h = sz.h;
+        woff = (sz.w-w)/2.f;
+        hoff = 0.f;
+    } else {
+        w = sz.w;
+        h = sz.w * SCREEN_SIZE_Y / SCREEN_SIZE_X;
+        woff = 0.f;
+        hoff = (sz.h-h)/2.f;
+    }
+    return Vector2((xpos-woff)*SCREEN_SIZE_X/w, (ypos-hoff)*SCREEN_SIZE_Y/h);
+}
+
 Screen::~Screen() {}
 
 void Screen::init() {}
@@ -63,9 +80,8 @@ ScreenUpdateReturn MenuScreen::update() {
             return std::monostate();
         case SDL_MOUSEBUTTONDOWN: {
             SDL_MouseButtonEvent mev = ev.button;
-            WindowSize sz = LCD.size();
             if (mev.button != SDL_BUTTON_LEFT) break;
-            Vector2 screenPoint(mev.x*SCREEN_SIZE_X/sz.w, mev.y*SCREEN_SIZE_Y/sz.h);
+            Vector2 screenPoint = adjustMousePos(mev.x, mev.y);
             if (play.isPointWithin(screenPoint)) {
                 return ScreenPtr(new GameplayScreen);
             } else if (stats.isPointWithin(screenPoint)) {
@@ -124,20 +140,7 @@ static Fruit makeRandomFruit() {
 ScreenUpdateReturn GameplayScreen::update() {
     LCD.Clear();
 
-    WindowSize sz = LCD.size();
-    float w, h, woff, hoff;
-    if (sz.w > sz.h * SCREEN_SIZE_X / SCREEN_SIZE_Y) {
-        w = sz.h * SCREEN_SIZE_X / SCREEN_SIZE_Y;
-        h = sz.h;
-        woff = (sz.w-w)/2.f;
-        hoff = 0.f;
-    } else {
-        w = sz.w;
-        h = sz.w * SCREEN_SIZE_Y / SCREEN_SIZE_X;
-        woff = 0.f;
-        hoff = (sz.h-h)/2.f;
-    }
-    Vector2 mousePos((xpos-woff)*SCREEN_SIZE_X/w, (ypos-hoff)*SCREEN_SIZE_Y/h);
+    Vector2 mousePos = adjustMousePos(xpos, ypos);
     if (mousePos.x < 0) mousePos.x = 0;
     else if (mousePos.x >= SCREEN_SIZE_X) mousePos.x = SCREEN_SIZE_X - 1;
     if (mousePos.y < 0) mousePos.y = 0;
@@ -216,8 +219,7 @@ ScreenUpdateReturn BackButtonScreen::update() {
             break;
         case SDL_MOUSEBUTTONUP: {
             SDL_MouseButtonEvent mev = ev.button;
-            WindowSize sz = LCD.size();
-            if (mev.button == SDL_BUTTON_LEFT && touching && backButton.isPointWithin(Vector2(mev.x*SCREEN_SIZE_X/sz.w, mev.y*SCREEN_SIZE_Y/sz.h)))
+            if (mev.button == SDL_BUTTON_LEFT && touching && backButton.isPointWithin(adjustMousePos(mev.x, mev.y)))
                 return ScreenPtr(new MenuScreen);
         }
         default:
